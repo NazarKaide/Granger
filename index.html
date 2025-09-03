@@ -86,7 +86,10 @@
           <button class="btn-play" onclick="document.getElementById('music').scrollIntoView({behavior:'smooth'})">Слухати разом</button>
           <!-- <button style="padding:10px 14px;border-radius:10px;background:#fff;border:1px solid rgba(16,24,40,0.06);">Завантажити фото</button> -->
         </div>
-
+        <div style="display:flex;gap:12px;margin-top:18px;">
+          <button class="btn-play" onclick="document.getElementById('video').scrollIntoView({behavior:'smooth'})">Сюрприз</button>
+          <!-- <button style="padding:10px 14px;border-radius:10px;background:#fff;border:1px solid rgba(16,24,40,0.06);">Завантажити фото</button> -->
+        </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px">
           <div class="card fade-up" style="padding:12px"><h3>Тепер</h3><p style="margin:0;color:var(--muted)">Ти поруч — мені добре.</p></div>
           <div class="card fade-up" style="padding:12px"><h3>Післязавтра</h3><p style="margin:0;color:var(--muted)">Кохатиму</p></div>
@@ -128,11 +131,11 @@
         <img src="index/10.jpg" alt="9">
         <img src="index/11.jpg" alt="10">
         <img src="index/12.jpg" alt="11">
-        <img src="index/9.jpg" alt="12">
-        <img src="index/10.jpg" alt="9">
-        <img src="index/11.jpg" alt="10">
-        <img src="index/12.jpg" alt="11">
-        <img src="index/9.jpg" alt="12">
+        <img src="index/13.jpg" alt="12">
+        <img src="index/14.jpg" alt="9">
+        <img src="index/15.jpg" alt="10">
+        <img src="index/16.jpg" alt="11">
+        <img src="index/17.jpg" alt="12">
       </div>
     </section>
 
@@ -150,13 +153,20 @@
 
   </main>
 
-  <div class="lightbox" id="lightbox" onclick="closeLightbox()"><img src="" alt="">
-  </div>
-
+ <div id="video"class="video-container">
   <video width="640" height="360" controls poster="index/pr.jpg">
     <source src="index/video0.mp4" type="video/mp4">
-    Ваш браузер не підтримує відео.
   </video>
+</div>
+
+<style>
+.video-container {
+  display: flex;
+  justify-content: center;  /* по горизонталі */
+  align-items: center;      /* по вертикалі */
+  height: 100vh;            /* вся висота вікна */
+}
+</style>
 
 
   <footer>
