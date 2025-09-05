@@ -66,6 +66,35 @@
     /* Video container */
     .video-container {display: flex; justify-content: center; align-items: center; height: 100vh;}
     .video-container video {border:5px dashed var(--accent); box-shadow:8px 8px 0 #111; border-radius:12px;}
+
+
+
+.overlay {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 15px 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
+  max-width: 300px;
+  margin: 0px 700px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Arial', sans-serif;
+  color: white;
+  text-align: center;
+
+}
+
+h1 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+#timer {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
   </style>
 </head>
 <body>
@@ -136,6 +165,38 @@
       <source src="index/video0.mp4" type="video/mp4">
     </video>
   </div>
+
+
+  <div class="overlay">
+    <h1>Ми разом вже 💕</h1>
+    <div id="timer"></div>
+    <audio autoplay loop>
+      <source src="your-music.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
+  <script>
+    // Задай дату вашого початку 💘
+    //const startDate = new Date("2023-08-15T00:00:00"); // приклад
+    const startDate = new Date("2025-07-05T00:00:00"); // приклад
+
+
+    function updateTimer() {
+      const now = new Date();
+      const diff = now - startDate;
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("timer").innerHTML =
+        days + " днів " + hours + " год " + minutes + " хв " + seconds + " сек ";
+    }
+
+    setInterval(updateTimer, 1000);
+    updateTimer();
+  </script>
 
   <footer>
     <p>З любов'ю — <strong>твій</strong> ❤️Назарчик❤️</p>
