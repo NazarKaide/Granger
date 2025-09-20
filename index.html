@@ -3,110 +3,119 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Для тебе — особливий сайт</title>
+  <title>Наш сайт</title>
   <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
   <style>
     :root{
       --bg1:#a18cd1; --bg2:#fbc2eb; --accent:#ff4f81; --muted:#444; --glass: rgba(255,255,255,0.6);
     }
-    *{box-sizing:border-box}
+    *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Permanent Marker',cursive; margin:0; color:#111; background:linear-gradient(135deg,var(--bg1),var(--bg2));}
-    header{position:fixed; top:0; left:0; right:0; height:72px; display:flex; align-items:center; justify-content:space-between; padding:0 28px; background:rgba(255,255,255,0.7); backdrop-filter:blur(6px); box-shadow:0 6px 20px rgba(16,24,40,0.06); z-index:50}
-    .logo{display:flex;align-items:center;gap:12px;font-weight:700;color:var(--accent)}
-    nav{display:flex;gap:18px}
-    nav a{color:#111;text-decoration:none;font-weight:600;opacity:.9}
+
+    /* Header */
+    header{position:fixed; top:0; left:0; right:0; height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; background:rgba(255,255,255,0.7); backdrop-filter:blur(6px); box-shadow:0 4px 12px rgba(16,24,40,0.1); z-index:100}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--accent)}
+    nav{display:flex;gap:16px;align-items:center}
+    nav a{color:#111;text-decoration:none;font-weight:600;opacity:.9;font-size:16px}
     nav a:hover{color:var(--accent)}
-    .btn-play{background:#fff; color:var(--accent); padding:10px 14px; border-radius:10px; font-weight:700; border:2px dashed var(--accent); box-shadow:2px 2px 0 #111; cursor:pointer; transition:0.2s}
+    .btn-play{background:#fff; color:var(--accent); padding:8px 12px; border-radius:10px; font-weight:700; border:2px dashed var(--accent); box-shadow:2px 2px 0 #111; cursor:pointer; transition:0.2s; font-size:14px}
     .btn-play:hover{transform:scale(1.05) rotate(-1deg); background:var(--accent); color:#fff}
 
-    main{padding-top:110px}
+    /* Burger menu */
+    .burger{display:none;flex-direction:column;cursor:pointer;gap:4px}
+    .burger div{width:25px;height:3px;background:#111;border-radius:2px}
+    .nav-links{display:flex;gap:16px}
+    .nav-links.active{display:block;position:absolute;top:64px;left:0;right:0;background:#fff;padding:20px;text-align:center}
+    .nav-links.active a{display:block;margin:10px 0;font-size:18px}
+
+    main{padding-top:90px}
 
     /* Hero */
-    .hero{display:grid; grid-template-columns:1fr 460px; gap:40px; align-items:center; padding:56px 6vw}
-    .hero-left h1{font-size:44px; margin:0 0 12px; line-height:1.02; color:var(--accent);}
-    .hero-left p{color:var(--muted); font-size:20px; margin:0 0 18px}
-    .hero-card{background:var(--glass); border-radius:18px; padding:22px; box-shadow:5px 5px 0 #111}
-    .photo{width:420px; height:420px; border-radius:20px; object-fit:cover; border:5px dashed var(--accent); box-shadow:8px 8px 0 #111; cursor:pointer;}
+    .hero{display:grid; grid-template-columns:1fr 1fr; gap:30px; align-items:center; padding:40px 5vw}
+    .hero-left h1{font-size:40px; margin-bottom:12px; line-height:1.2; color:var(--accent);}
+    .hero-left p{color:var(--muted); font-size:18px; margin-bottom:18px}
+    .hero-card{background:var(--glass); border-radius:18px; padding:18px; box-shadow:5px 5px 0 #111; text-align:center}
+    .photo{width:100%; max-width:380px; height:auto; border-radius:20px; object-fit:cover; border:5px dashed var(--accent); box-shadow:8px 8px 0 #111; cursor:pointer;}
 
     /* Sections */
-    section{padding:64px 6vw}
-    .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:22px}
-    .card{background:#fff; border:3px dashed var(--accent); border-radius:14px; padding:20px; text-align:left; box-shadow:4px 4px 0 #111;}
-    .card h3{margin:0 0 8px;color:var(--accent)}
-    .timeline{max-width:1000px;margin:20px auto}
+    section{padding:50px 5vw}
+    h2{text-align:center;margin-bottom:24px;color:#111;font-size:26px}
+
+    /* Timeline */
+    .timeline{position: relative; max-width: 900px; margin: 0 auto;}
+    .timeline::after{content:'';position:absolute;width:4px;background:var(--accent);top:0;bottom:0;left:50%;margin-left:-2px}
+    .timeline-item{padding:20px;background:#fff;border-radius:12px;box-shadow:4px 4px 0 #111;width:45%;position:relative;margin-bottom:30px;opacity:0;transform:translateY(30px);transition:all 0.8s ease}
+    .timeline-item.show{opacity:1;transform:translateY(0)}
+    .timeline-item.left{left:0}
+    .timeline-item.right{left:55%}
+    .timeline-item::after{content:'';position:absolute;top:20px;width:20px;height:20px;background:var(--accent);border-radius:50%;right:-10px}
+    .timeline-item.right::after{left:-10px;right:auto}
 
     /* Gallery */
-    .gallery-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
-    .gallery-grid img{width:100%; height:200px; object-fit:cover; border-radius:12px; cursor:pointer; border:3px solid var(--accent); box-shadow:3px 3px 0 #111; transition:transform .2s}
+    .gallery-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px}
+    .gallery-grid img{width:100%; height:180px; object-fit:cover; border-radius:12px; cursor:pointer; border:3px solid var(--accent); box-shadow:3px 3px 0 #111; transition:transform .2s}
     .gallery-grid img:hover{transform:rotate(-2deg) scale(1.05)}
 
-    /* Footer */
-    footer{padding:48px 6vw; text-align:center; color:var(--muted); font-size:18px}
+    /* Video */
+    .video-container{display:flex;justify-content:center;padding:20px}
+    .video-container video{width:100%;max-width:720px;border:5px dashed var(--accent);box-shadow:8px 8px 0 #111;border-radius:12px}
 
-    /* Floating hearts animation */
-    .hearts{position:fixed; left:0; right:0; top:0; bottom:0; pointer-events:none; z-index:10}
-    .heart{position:absolute; width:18px; height:18px; transform:translate(-50%,-50%) rotate(45deg); background:var(--accent); border-radius:4px; box-shadow:0 3px 6px rgba(0,0,0,0.2)}
-    .heart:before,.heart:after{content:''; position:absolute; width:18px; height:18px; background:var(--accent); border-radius:50%}
-    .heart:before{top:-9px; left:0}
-    .heart:after{left:9px; top:0}
+    /* Footer */
+    footer{padding:30px 5vw;text-align:center;color:var(--muted);font-size:16px}
+
+    /* Floating hearts + stars */
+    .hearts,.stars{position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none;z-index:1}
+    .heart{position:absolute;width:18px;height:18px;transform:translate(-50%,-50%) rotate(45deg);background:var(--accent);border-radius:4px;box-shadow:0 3px 6px rgba(0,0,0,0.2)}
+    .heart:before,.heart:after{content:'';position:absolute;width:18px;height:18px;background:var(--accent);border-radius:50%}
+    .heart:before{top:-9px;left:0}
+    .heart:after{left:9px;top:0}
+    .star{position:absolute;background:white;border-radius:50%;opacity:0.8;animation:floatStar linear infinite}
+    @keyframes floatStar{from{transform:translateY(100vh) scale(1);opacity:.8}to{transform:translateY(-10vh) scale(.5);opacity:0}}
 
     /* Lightbox */
-    .lightbox{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.8); visibility:hidden; opacity:0; transition:opacity .25s; z-index:100}
-    .lightbox.open{visibility:visible; opacity:1}
-    .lightbox img{max-width:90%; max-height:90%; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+    .lightbox{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.8);visibility:hidden;opacity:0;transition:opacity .25s;z-index:200}
+    .lightbox.open{visibility:visible;opacity:1}
+    .lightbox img{max-width:90%;max-height:90%;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+
+    /* Overlay Timer */
+    .overlay{background:rgba(0,0,0,0.6);padding:15px 25px;border-radius:10px;box-shadow:0 0 10px rgba(255,255,255,0.2);max-width:320px;margin:20px auto;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Arial',sans-serif;color:white;text-align:center;z-index:150;position:relative}
+    .overlay h1{font-size:1.2rem;margin-bottom:10px}
+    #timer{font-size:1rem;font-weight:bold}
 
     /* Responsive */
-    @media (max-width:1000px){.hero{grid-template-columns:1fr;}.hero .photo{width:320px;height:320px; margin:0 auto}.gallery-grid{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:600px){header{padding:0 12px} .hero-left h1{font-size:28px} .photo{width:260px;height:260px} .gallery-grid{grid-template-columns:1fr} .cards{grid-template-columns:1fr}}
-
-    /* Small interactions */
-    .fade-up{opacity:0; transform:translateY(20px); transition:opacity .6s ease, transform .6s ease}
-    .fade-up.show{opacity:1; transform:translateY(0)}
-
-    /* Video container */
-    .video-container {display: flex; justify-content: center; align-items: center; height: 100vh;}
-    .video-container video {border:5px dashed var(--accent); box-shadow:8px 8px 0 #111; border-radius:12px;}
-
-
-
-.overlay {
-  background: rgba(0, 0, 0, 0.6);
-  padding: 15px 25px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(255,255,255,0.2);
-  max-width: 300px;
-  margin: 0px 700px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Arial', sans-serif;
-  color: white;
-  text-align: center;
-
-}
-
-h1 {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-}
-
-#timer {
-  font-size: 1rem;
-  font-weight: bold;
-}
-
+    @media(max-width:900px){
+      .hero{grid-template-columns:1fr}
+      .hero-left{text-align:center}
+      .hero-left h1{font-size:30px}
+      .hero-left p{font-size:16px}
+      .photo{max-width:280px}
+      .timeline::after{left:20px}
+      .timeline-item{width:100%!important;left:0!important;padding-left:50px}
+      .timeline-item::after{left:15px!important}
+    }
+    @media(max-width:700px){
+      .burger{display:flex}
+      .nav-links{display:none;flex-direction:column}
+      nav{position:relative}
+    }
   </style>
 </head>
 <body>
   <div class="hearts" id="hearts"></div>
+  <div class="stars" id="stars"></div>
+
   <header>
     <div class="logo">💖 <span style="font-weight:800;margin-left:6px">Для тебе</span></div>
     <nav>
-      <a href="#about">Про нас</a>
-      <a href="#moments">Моменти</a>
-      <a href="#gallery">Галерея</a>
-      <a href="#music">Музика</a>
-      <a class="btn-play" href="#">Play</a>
+      <div class="burger" id="burger">
+        <div></div><div></div><div></div>
+      </div>
+      <div class="nav-links" id="navLinks">
+        <a href="#moments">Моменти</a>
+        <a href="#timeline">Історія</a>
+        <a href="#gallery">Галерея</a>
+        <a href="#music">Музика</a>
+      </div>
     </nav>
   </header>
 
@@ -115,57 +124,55 @@ h1 {
       <div class="hero-left">
         <h1>Ти — моє найтепліше натхнення</h1>
         <p>Кожен день з тобою — нова сторінка, повна сміху, тепла й маленьких чудес.</p>
-
-        <div style="display:flex;gap:12px;margin-top:18px;">
-          <button class="btn-play" onclick="document.getElementById('music').scrollIntoView({behavior:'smooth'})">Слухати разом</button>
-        </div>
-        <div style="display:flex;gap:12px;margin-top:18px;">
-          <button class="btn-play" onclick="document.getElementById('video').scrollIntoView({behavior:'smooth'})">Сюрприз</button>
-        </div>
+        <button class="btn-play" onclick="document.getElementById('music').scrollIntoView({behavior:'smooth'})">Слухати разом</button>
       </div>
-
       <div class="hero-card">
         <img class="photo" src="index/1.jpg" alt="Твоє фото" onclick="openLightbox(this.src)">
       </div>
     </section>
 
     <section id="moments">
-      <h2 style="text-align:center;color:#111">Моменти, які варто зберегти</h2>
-      <div class="gallery-grid" id="gallery">
+      <h2>Моменти, які варто зберегти</h2>
+      <div class="gallery-grid">
         <img src="index/2.jpg" alt="1" onclick="openLightbox(this.src)">
         <img src="index/3.jpg" alt="2" onclick="openLightbox(this.src)">
         <img src="index/4.jpg" alt="3" onclick="openLightbox(this.src)">
-        <img src="index/5.jpg" alt="4" onclick="openLightbox(this.src)">
-        <img src="index/6.jpg" alt="1" onclick="openLightbox(this.src)">
-        <img src="index/7.jpg" alt="2" onclick="openLightbox(this.src)">
-        <img src="index/8.jpg" alt="3" onclick="openLightbox(this.src)">
-        <img src="index/9.jpg" alt="4" onclick="openLightbox(this.src)">
-        <img src="index/10.jpg" alt="1" onclick="openLightbox(this.src)">
-        <img src="index/11.jpg" alt="2" onclick="openLightbox(this.src)">
-        <img src="index/12.jpg" alt="3" onclick="openLightbox(this.src)">
-        <img src="index/13.jpg" alt="4" onclick="openLightbox(this.src)">
-        <img src="index/14.jpg" alt="1" onclick="openLightbox(this.src)">
-        <img src="index/15.jpg" alt="2" onclick="openLightbox(this.src)">
-        <img src="index/16.jpg" alt="3" onclick="openLightbox(this.src)">
-        <img src="index/17.jpg" alt="4" onclick="openLightbox(this.src)">
+        <img src="index/5.jpg" alt="1" onclick="openLightbox(this.src)">
+        <img src="index/6.jpg" alt="2" onclick="openLightbox(this.src)">
+        <img src="index/7.jpg" alt="3" onclick="openLightbox(this.src)">
+        <img src="index/8.jpg" alt="2" onclick="openLightbox(this.src)">
+        <img src="index/9.jpg" alt="3" onclick="openLightbox(this.src)">
+        <img src="index/10.jpg" alt="2" onclick="openLightbox(this.src)">
+        <img src="index/11.jpg" alt="3" onclick="openLightbox(this.src)">
+        <img src="index/12.jpg" alt="1" onclick="openLightbox(this.src)">
+        <img src="index/13.jpg" alt="2" onclick="openLightbox(this.src)">
+        <img src="index/14.jpg" alt="3" onclick="openLightbox(this.src)">
+        <img src="index/15.jpg" alt="1" onclick="openLightbox(this.src)">
+        <img src="index/16.jpg" alt="2" onclick="openLightbox(this.src)">
+        <img src="index/17.jpg" alt="3" onclick="openLightbox(this.src)">
+      </div>
+    </section>
+
+    <section id="timeline">
+      <h2>Наша історія</h2>
+      <div class="timeline">
+        <div class="timeline-item left"><h3>05.07.2025</h3><p>Наша офіційна дата 💕</p></div>
+        <div class="timeline-item right"><h3>15.07.2025</h3><p>Перша велика поїздка разом 🚗✨</p></div>
+        <div class="timeline-item left"><h3>31.08.2025</h3><p>Концерт Чіко і Катоші 🌸</p></div>
       </div>
     </section>
 
     <section id="music">
-      <h2 style="text-align:center;color:var(--accent)">Плейлист для нас</h2>
-      <div style="display:flex;justify-content:center;margin-top:18px">
-        <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2122823082&color=%23ff4f81&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
-      </div>
+      <h2>Плейлист для нас</h2>
+      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2170106649&color=%23121110&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/nazar-piasetskyi" title="Granger" target="_blank" style="color: #cccccc; text-decoration: none;">Granger</a> · <a href="https://soundcloud.com/nazar-piasetskyi/love-you" title="Love you" target="_blank" style="color: #cccccc; text-decoration: none;">Love you</a></div>
     </section>
-
   </main>
 
-  <div id="video" class="video-container">
-    <video width="640" height="360" controls poster="index/pr.jpg">
+  <div class="video-container">
+    <video controls poster="index/pr.jpg">
       <source src="index/video0.mp4" type="video/mp4">
     </video>
   </div>
-
 
   <div class="overlay">
     <h1>Ми разом вже 💕</h1>
@@ -175,32 +182,7 @@ h1 {
     </audio>
   </div>
 
-  <script>
-    // Задай дату вашого початку 💘
-    //const startDate = new Date("2023-08-15T00:00:00"); // приклад
-    const startDate = new Date("2025-07-05T00:00:00"); // приклад
-
-
-    function updateTimer() {
-      const now = new Date();
-      const diff = now - startDate;
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-
-      document.getElementById("timer").innerHTML =
-        days + " днів " + hours + " год " + minutes + " хв " + seconds + " сек ";
-    }
-
-    setInterval(updateTimer, 1000);
-    updateTimer();
-  </script>
-
-  <footer>
-    <p>З любов'ю — <strong>твій</strong> ❤️Назарчик❤️</p>
-  </footer>
+  <footer><p>З любов'ю — <strong>твій</strong> ❤️Назарчик❤️</p></footer>
 
   <!-- Lightbox -->
   <div id="lightbox" class="lightbox" onclick="closeLightbox()">
@@ -208,30 +190,40 @@ h1 {
   </div>
 
   <script>
-    // floating hearts generator
-    const hearts = document.getElementById('hearts');
-    function spawnHeart(){
-      const h = document.createElement('div'); h.className='heart';
-      const x = Math.random()*100;
-      h.style.left = x + '%'; h.style.top = '100%';
-      const size = 12 + Math.random()*26; h.style.width = size+'px'; h.style.height = size+'px';
-      hearts.appendChild(h);
-      const anim = h.animate([
-        {transform:'translateY(0) scale(1)', opacity:1},
-        {transform:'translateY(-120vh) scale(1.2)', opacity:0}
-      ],{duration: 6000 + Math.random()*4000, easing:'ease-out'});
-      anim.onfinish = ()=> h.remove();
+    // Таймер
+    const startDate = new Date("2025-07-05T00:00:00");
+    function updateTimer() {
+      const now = new Date();
+      const diff = now - startDate;
+      const d = Math.floor(diff / (1000*60*60*24));
+      const h = Math.floor((diff / (1000*60*60)) % 24);
+      const m = Math.floor((diff / (1000*60)) % 60);
+      const s = Math.floor((diff / 1000) % 60);
+      document.getElementById("timer").innerHTML = d+" днів "+h+" год "+m+" хв "+s+" сек";
     }
-    setInterval(spawnHeart, 700);
+    setInterval(updateTimer,1000); updateTimer();
 
-    // lightbox functions
-    function openLightbox(src){
-      document.getElementById('lightbox-img').src = src;
-      document.getElementById('lightbox').classList.add('open');
-    }
-    function closeLightbox(){
-      document.getElementById('lightbox').classList.remove('open');
-    }
+    // Сердечка
+    const hearts=document.getElementById('hearts');
+    function spawnHeart(){const h=document.createElement('div');h.className='heart';h.style.left=Math.random()*100+'%';h.style.top='100%';const size=12+Math.random()*26;h.style.width=size+'px';h.style.height=size+'px';hearts.appendChild(h);const anim=h.animate([{transform:'translateY(0) scale(1)',opacity:1},{transform:'translateY(-120vh) scale(1.2)',opacity:0}],{duration:6000+Math.random()*4000,easing:'ease-out'});anim.onfinish=()=>h.remove();}
+    setInterval(spawnHeart,700);
+
+    // Зірочки
+    const stars=document.getElementById("stars");
+    function spawnStar(){const star=document.createElement("div");star.className="star";const size=Math.random()*4+2;star.style.width=size+"px";star.style.height=size+"px";star.style.left=Math.random()*100+"vw";star.style.animationDuration=(5+Math.random()*5)+"s";stars.appendChild(star);setTimeout(()=>star.remove(),10000);}
+    setInterval(spawnStar,200);
+
+    // Lightbox
+    function openLightbox(src){document.getElementById('lightbox-img').src=src;document.getElementById('lightbox').classList.add('open');}
+    function closeLightbox(){document.getElementById('lightbox').classList.remove('open');}
+
+    // Timeline анімація
+    const items=document.querySelectorAll('.timeline-item');
+    const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');}});},{threshold:0.2});
+    items.forEach(i=>observer.observe(i));
+
+    // Burger
+    document.getElementById("burger").onclick=()=>{document.getElementById("navLinks").classList.toggle("active");};
   </script>
 </body>
 </html>
