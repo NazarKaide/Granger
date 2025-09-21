@@ -1,229 +1,647 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Наш сайт</title>
-  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg1:#a18cd1; --bg2:#fbc2eb; --accent:#ff4f81; --muted:#444; --glass: rgba(255,255,255,0.6);
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Permanent Marker',cursive; margin:0; color:#111; background:linear-gradient(135deg,var(--bg1),var(--bg2));}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Казкова книга — каркас</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#081826;
+    --paper:#fff7f1;
+    --ink:#2b2b2b;
+    --accent:#ff6fa3;
+    --muted:#7a6b68;
+    --gold:#ffd58a;
+  }
 
-    /* Header */
-    header{position:fixed; top:0; left:0; right:0; height:64px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; background:rgba(255,255,255,0.7); backdrop-filter:blur(6px); box-shadow:0 4px 12px rgba(16,24,40,0.1); z-index:100}
-    .logo{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--accent)}
-    nav{display:flex;gap:16px;align-items:center}
-    nav a{color:#111;text-decoration:none;font-weight:600;opacity:.9;font-size:16px}
-    nav a:hover{color:var(--accent)}
-    .btn-play{background:#fff; color:var(--accent); padding:8px 12px; border-radius:10px; font-weight:700; border:2px dashed var(--accent); box-shadow:2px 2px 0 #111; cursor:pointer; transition:0.2s; font-size:14px}
-    .btn-play:hover{transform:scale(1.05) rotate(-1deg); background:var(--accent); color:#fff}
+  /* Загальна сцена */
+  html,body{height:100%;margin:0;font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto;background:linear-gradient(180deg,#04101a 0%,#0b2a3a 60%);color:var(--ink)}
+  .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
 
-    /* Burger menu */
-    .burger{display:none;flex-direction:column;cursor:pointer;gap:4px}
-    .burger div{width:25px;height:3px;background:#111;border-radius:2px}
-    .nav-links{display:flex;gap:16px}
-    .nav-links.active{display:block;position:absolute;top:64px;left:0;right:0;background:#fff;padding:20px;text-align:center}
-    .nav-links.active a{display:block;margin:10px 0;font-size:18px}
+  /* Книжковий контейнер — робить центральний розворот */
+  .book {
+    width: 100%;
+    max-width: 1100px;
+    height: 72vh;
+    max-height: 760px;
+    perspective: 2200px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    main{padding-top:90px}
+  /* Панель, що містить ліву і праву сторінку */
+  .spread {
+    width: 92%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+  }
 
-    /* Hero */
-    .hero{display:grid; grid-template-columns:1fr 1fr; gap:30px; align-items:center; padding:40px 5vw}
-    .hero-left h1{font-size:40px; margin-bottom:12px; line-height:1.2; color:var(--accent);}
-    .hero-left p{color:var(--muted); font-size:18px; margin-bottom:18px}
-    .hero-card{background:var(--glass); border-radius:18px; padding:18px; box-shadow:5px 5px 0 #111; text-align:center}
-    .photo{width:100%; max-width:380px; height:auto; border-radius:20px; object-fit:cover; border:5px dashed var(--accent); box-shadow:8px 8px 0 #111; cursor:pointer;}
+  /* Ліва / Права сторінки (створюємо вигляд розвороту) */
+  .pane {
+    width: calc(50% - 28px); /* трохи відступу для шва */
+    height: 100%;
+    background: linear-gradient(180deg, #fffaf6, #fff6f1);
+    border-radius: 10px;
+    box-shadow: 0 30px 80px rgba(2,6,12,0.45);
+    overflow: auto;
+    padding: 36px;
+    box-sizing: border-box;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    position: relative;
+  }
+  .pane.left { margin-right: 20px; transform-origin: right center; }
+  .pane.right { margin-left: 20px; transform-origin: left center; }
 
-    /* Sections */
-    section{padding:50px 5vw}
-    h2{text-align:center;margin-bottom:24px;color:#111;font-size:26px}
+  /* Режим мобільний — вертикально (компактніше) */
+  @media (max-width: 820px) {
+    .spread { flex-direction: column; gap: 18px; align-items: center; }
+    .pane { width: 92%; height: 46%; margin: 0; border-radius: 12px; }
+  }
 
-    /* Timeline */
-    .timeline{position: relative; max-width: 900px; margin: 0 auto;}
-    .timeline::after{content:'';position:absolute;width:4px;background:var(--accent);top:0;bottom:0;left:50%;margin-left:-2px}
-    .timeline-item{padding:20px;background:#fff;border-radius:12px;box-shadow:4px 4px 0 #111;width:45%;position:relative;margin-bottom:30px;opacity:0;transform:translateY(30px);transition:all 0.8s ease}
-    .timeline-item.show{opacity:1;transform:translateY(0)}
-    .timeline-item.left{left:0}
-    .timeline-item.right{left:55%}
-    .timeline-item::after{content:'';position:absolute;top:20px;width:20px;height:20px;background:var(--accent);border-radius:50%;right:-10px}
-    .timeline-item.right::after{left:-10px;right:auto}
+  /* Тінь / шов між сторінками (спина книги) */
+  .gutter {
+    position: absolute;
+    width: 44px;
+    height: 82%;
+    left: 50%;
+    top: 9%;
+    transform: translateX(-50%);
+    border-radius: 8px;
+    pointer-events: none;
+    box-shadow: inset 0 12px 30px rgba(0,0,0,0.65);
+    background: linear-gradient(90deg, rgba(0,0,0,0.25), rgba(255,255,255,0.03), rgba(0,0,0,0.15));
+    z-index: 20;
+  }
 
-    /* Gallery */
-    .gallery-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px}
-    .gallery-grid img{width:100%; height:180px; object-fit:cover; border-radius:12px; cursor:pointer; border:3px solid var(--accent); box-shadow:3px 3px 0 #111; transition:transform .2s}
-    .gallery-grid img:hover{transform:rotate(-2deg) scale(1.05)}
+  /* Flipper - накладна "листок" який анімується при перелистуванні */
+  .flipper {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: calc(50% - 28px);
+    background: linear-gradient(180deg,#fffaf6,#fff6f1);
+    border-radius: 10px;
+    box-shadow: 0 30px 80px rgba(2,6,12,0.45);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    transition: transform .72s cubic-bezier(.2,.9,.25,1), left .2s;
+    z-index: 1000;
+    overflow: hidden;
+    padding: 36px;
+    box-sizing: border-box;
+  }
+  .flipper .content { height:100%; overflow:auto; }
 
-    /* Video */
-    .video-container{display:flex;justify-content:center;padding:20px}
-    .video-container video{width:100%;max-width:720px;border:5px dashed var(--accent);box-shadow:8px 8px 0 #111;border-radius:12px}
+  /* Controls */
+  .controls {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    z-index:1200;
+  }
+  .ctrl {
+    width:44px;height:44px;border-radius:10px;border:none;background:rgba(255,255,255,0.95);display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 20px rgba(2,6,12,0.25)
+  }
+  .ctrl:active{transform:scale(.98)}
+  .toggle-sound.active{background:linear-gradient(135deg,var(--accent),var(--gold));color:#fff}
 
-    /* Footer */
-    footer{padding:30px 5vw;text-align:center;color:var(--muted);font-size:16px}
+  /* Індикатор */
+  .indicator {
+    position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.95);padding:8px 12px;border-radius:20px;font-weight:600;color:var(--muted);z-index:1200;
+  }
 
-    /* Floating hearts + stars */
-    .hearts,.stars{position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none;z-index:1}
-    .heart{position:absolute;width:18px;height:18px;transform:translate(-50%,-50%) rotate(45deg);background:var(--accent);border-radius:4px;box-shadow:0 3px 6px rgba(0,0,0,0.2)}
-    .heart:before,.heart:after{content:'';position:absolute;width:18px;height:18px;background:var(--accent);border-radius:50%}
-    .heart:before{top:-9px;left:0}
-    .heart:after{left:9px;top:0}
-    .star{position:absolute;background:white;border-radius:50%;opacity:0.8;animation:floatStar linear infinite}
-    @keyframes floatStar{from{transform:translateY(100vh) scale(1);opacity:.8}to{transform:translateY(-10vh) scale(.5);opacity:0}}
+  /* Дрібні декоративні класи */
+  h2.title { font-family:'Playfair Display', serif; color:var(--accent); margin:0 0 6px; font-size:28px; text-align:center }
+  p.lead { color:var(--muted); line-height:1.5; margin: 12px 0 0; text-align:center; max-width:520px; margin-left:auto;margin-right:auto }
+  .photo { background:linear-gradient(135deg,#f4f4f4,#eaeaea); padding:14px; border-radius:8px; text-align:center; cursor:pointer; }
+  .mini-grid{display:grid;grid-template-columns:1fr 1fr; gap:8px}
 
-    /* Lightbox */
-    .lightbox{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.8);visibility:hidden;opacity:0;transition:opacity .25s;z-index:200}
-    .lightbox.open{visibility:visible;opacity:1}
-    .lightbox img{max-width:90%;max-height:90%;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+  /* canvas блискіток */
+  #sparkleCanvas { position:absolute; inset:0; pointer-events:none; z-index:110; }
 
-    /* Overlay Timer */
-    .overlay{background:rgba(0,0,0,0.6);padding:15px 25px;border-radius:10px;box-shadow:0 0 10px rgba(255,255,255,0.2);max-width:320px;margin:20px auto;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Arial',sans-serif;color:white;text-align:center;z-index:150;position:relative}
-    .overlay h1{font-size:1.2rem;margin-bottom:10px}
-    #timer{font-size:1rem;font-weight:bold}
+  /* Лайтбокс */
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:2000;visibility:hidden;opacity:0;transition:opacity .2s}
+  .lightbox.open{visibility:visible;opacity:1}
+  .lightbox .card{background:#00000088;padding:20px;border-radius:10px;color:#fff;max-width:90%;max-height:90%;overflow:auto;text-align:center}
 
-    /* Responsive */
-    @media(max-width:900px){
-      .hero{grid-template-columns:1fr}
-      .hero-left{text-align:center}
-      .hero-left h1{font-size:30px}
-      .hero-left p{font-size:16px}
-      .photo{max-width:280px}
-      .timeline::after{left:20px}
-      .timeline-item{width:100%!important;left:0!important;padding-left:50px}
-      .timeline-item::after{left:15px!important}
-    }
-    @media(max-width:700px){
-      .burger{display:flex}
-      .nav-links{display:none;flex-direction:column}
-      nav{position:relative}
-    }
-  </style>
+  /* Адаптив для кнопок на мобільному */
+  @media (max-width: 820px) {
+    .controls { left:50%; right:auto; top:auto; bottom:10px; transform:translateX(-50%); flex-direction:row; gap:8px; }
+    .ctrl { width:38px;height:38px;border-radius:8px; }
+  }
+</style>
 </head>
 <body>
-  <div class="hearts" id="hearts"></div>
-  <div class="stars" id="stars"></div>
+<div class="wrap">
+  <div class="book" id="book">
 
-  <header>
-    <div class="logo">💖 <span style="font-weight:800;margin-left:6px">Для тебе</span></div>
-    <nav>
-      <div class="burger" id="burger">
-        <div></div><div></div><div></div>
-      </div>
-      <div class="nav-links" id="navLinks">
-        <a href="#moments">Моменти</a>
-        <a href="#timeline">Історія</a>
-        <a href="#gallery">Галерея</a>
-        <a href="#music">Музика</a>
-      </div>
-    </nav>
-  </header>
+    <!-- Розворот: два "pane" куди ми рендеримо контент -->
+    <div class="spread" id="spread">
 
-  <main>
-    <section class="hero">
-      <div class="hero-left">
-        <h1>Ти — моє найтепліше натхнення</h1>
-        <p>Кожен день з тобою — нова сторінка, повна сміху, тепла й маленьких чудес.</p>
-        <button class="btn-play" onclick="document.getElementById('music').scrollIntoView({behavior:'smooth'})">Слухати разом</button>
-      </div>
-      <div class="hero-card">
-        <img class="photo" src="index/1.jpg" alt="Твоє фото" onclick="openLightbox(this.src)">
-      </div>
-    </section>
+      <div class="pane left" id="leftPane" aria-hidden="false"></div>
+      <div class="pane right" id="rightPane" aria-hidden="false"></div>
 
-    <section id="moments">
-      <h2>Моменти, які варто зберегти</h2>
-      <div class="gallery-grid">
-        <img src="index/2.jpg" alt="1" onclick="openLightbox(this.src)">
-        <img src="index/3.jpg" alt="2" onclick="openLightbox(this.src)">
-        <img src="index/4.jpg" alt="3" onclick="openLightbox(this.src)">
-        <img src="index/5.jpg" alt="1" onclick="openLightbox(this.src)">
-        <img src="index/6.jpg" alt="2" onclick="openLightbox(this.src)">
-        <img src="index/7.jpg" alt="3" onclick="openLightbox(this.src)">
-        <img src="index/8.jpg" alt="2" onclick="openLightbox(this.src)">
-        <img src="index/9.jpg" alt="3" onclick="openLightbox(this.src)">
-        <img src="index/10.jpg" alt="2" onclick="openLightbox(this.src)">
-        <img src="index/11.jpg" alt="3" onclick="openLightbox(this.src)">
-        <img src="index/12.jpg" alt="1" onclick="openLightbox(this.src)">
-        <img src="index/13.jpg" alt="2" onclick="openLightbox(this.src)">
-        <img src="index/14.jpg" alt="3" onclick="openLightbox(this.src)">
-        <img src="index/15.jpg" alt="1" onclick="openLightbox(this.src)">
-        <img src="index/16.jpg" alt="2" onclick="openLightbox(this.src)">
-        <img src="index/17.jpg" alt="3" onclick="openLightbox(this.src)">
+      <!-- шов/спинка -->
+      <div class="gutter"></div>
+
+      <!-- накладний фліппер (динамічно додається/анімується) -->
+      <!-- елемент створюється скриптом при перелистуванні -->
+
+      <!-- canvas для блискіток -->
+      <canvas id="sparkleCanvas"></canvas>
+    </div>
+
+    <!-- Кнопки управління -->
+    <div class="controls" role="toolbar" aria-label="Керування книгою">
+      <button class="ctrl" id="prevBtn" title="Попередня сторінка">‹</button>
+      <button class="ctrl" id="nextBtn" title="Наступна сторінка">›</button>
+      <button class="ctrl toggle-sound" id="soundToggle" title="Увімкнути/вимкнути звук">🔊</button>
+    </div>
+
+    <div class="indicator" id="indicator">Розворот 1 / 4</div>
+
+    <!-- Лайтбокс -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+      <div class="card" id="lightboxContent">Тут буде фото</div>
+    </div>
+
+    <!-- ============================
+         ШАБЛОНИ СТОРІНОК (легко редагувати)
+         - Заміни вміст тут на свої фото/тексти
+         - JS зчитує їх і рендерить у панелі
+         ============================ -->
+    <div id="templates" style="display:none">
+      <div class="page-template" data-index="0">
+        <div style="text-align:center">
+          <div style="font-size:48px; color:var(--accent)">✨</div>
+          <h2 class="title">Казкова книга</h2>
+          <div class="subtitle" style="color:var(--muted);text-align:center">Для моєї найрідніщої</div>
+          <div style="height:12px"></div>
+          <p class="lead">Відкрий цю книгу — і ми помандруємо знову через наші моменти, фотографії, пісні і спогади.</p>
+          <div style="position:absolute; left:36px; bottom:24px; color:var(--muted); font-size:13px">Написано з любов'ю — Назар</div>
+        </div>
       </div>
-    </section>
 
-    <section id="timeline">
-      <h2>Наша історія</h2>
-      <div class="timeline">
-        <div class="timeline-item left"><h3>05.07.2025</h3><p>Наша офіційна дата 💕</p></div>
-        <div class="timeline-item right"><h3>05.07.2025</h3><p>Перший поцілунок ✨</p></div>
-        <div class="timeline-item left"><h3>31.08.2025</h3><p>Концерт Чіко і Катоші 🌸</p></div>
+      <div class="page-template" data-index="1">
+        <div>
+          <h2 style="margin-top:6px">Привітання</h2>
+          <div style="height:8px"></div><div class="decor-line" style="height:4px;width:60px;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:3px"></div>
+          <p style="font-family:'Playfair Display',serif;font-size:16px;color:var(--ink)">Моя дорога, ця книга — маленький сад спогадів. Тут — сміх, музика, наші перші дні й теплі вечори.</p>
+          <div class="photo" style="margin-top:12px">📸 Натисни, щоб збільшити (тут буде фото)<img src="index/2.jpg" width="350" height="400" text-align="center" alt="1"></div>
+        
+        </div>
       </div>
-    </section>
 
-    <section id="music">
-      <h2>Плейлист для нас</h2>
-      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2170106649&color=%23121110&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/nazar-piasetskyi" title="Granger" target="_blank" style="color: #cccccc; text-decoration: none;">Granger</a> · <a href="https://soundcloud.com/nazar-piasetskyi/love-you" title="Love you" target="_blank" style="color: #cccccc; text-decoration: none;">Love you</a></div>
-    </section>
-  </main>
+      <div class="page-template" data-index="2" data-illustration="petals">
+        <div>
+          <h2>Моменти</h2>
+          <div style="height:8px"></div>
+          <p>Найяскравіші миті, збережені для нас:</p>
+          <ul style="padding-left:18px;color:var(--muted)">
+            <li>🌸 Перше побачення</li>
+            <li>🌟 Прогулянка під дощем</li>
+            <li>💫 Наші прогулянки набережною</li>
+            <li>🎵 Улюблена пісня разом</li>
+          </ul>
+        </div>
+      </div>
 
-  <div class="video-container">
-    <video controls poster="index/pr.jpg">
-      <source src="index/video0.mp4" type="video/mp4">
-    </video>
+      <div class="page-template" data-index="3" data-illustration="clouds">
+        <div>
+          <h2>Галерея</h2>
+          <p>📸 Тут будуть наші найдорожчі фотографії</p>
+          <div class="mini-grid" style="margin-top:12px">
+            <div class="photo"><img src="index\2.jpg" width="150" height="150" alt="1"></div>
+            <div class="photo"><img src="index\3.jpg" width="150" height="150" alt="1"></div>
+            <div class="photo"><img src="index\4.jpg" width="150" height="150" alt="1"></div>
+            <div class="photo"><img src="index\5.jpg" width="150" height="150" alt="1"></div>
+            <div class="photo"><img src="index\6.jpg" width="150" height="150" alt="1"></div>
+            <div class="photo"><img src="index\7.jpg" width="150" height="150" alt="1"></div>
+            <div class="photo"><img src="index\8.jpg" width="150" height="150" alt="1"></div>
+            <div class="photo"><img src="index\9.jpg" width="150" height="150" alt="1"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-template" data-index="4">
+        <div>
+          <h2>Наша хроніка</h2>
+          <p>Короткі зупинки у часі — те, що ми згадуємо</p>
+          <ul style="padding-left:0;list-style:none">
+            <li style="background:rgba(0,0,0,0.04);padding:8px;border-radius:6px;margin-bottom:8px"><strong>05.07.2025</strong> — Початок нашої історії</li>
+            <li style="background:rgba(0,0,0,0.04);padding:8px;border-radius:6px;margin-bottom:8px"><strong>31.08.2025</strong> — Перший концерт</li>
+            <li style="background:rgba(0,0,0,0.04);padding:8px;border-radius:6px"><strong>Колись..</strong> — Ніч під зорями</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="page-template" data-index="5">
+        <div>
+          <h2>Плейлист</h2>
+          <p>Мелодії, які нагадують про нас</p>
+          <div style="margin-top:12px;display:flex;gap:12px;align-items:center">
+            <iframe width="100%" height="166" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2170106649&color=%23121110&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/nazar-piasetskyi" title="Granger" target="_blank" style="color: #cccccc; text-decoration: none;">Granger</a> · <a href="https://soundcloud.com/nazar-piasetskyi/love-you" title="Love you" target="_blank" style="color: #cccccc; text-decoration: none;">Love you</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-template" data-index="6">
+        <div>
+          <h2>Кінець? Ні — тільки початок</h2>
+          <p style="font-family:'Playfair Display',serif">Ще багато сторінок попереду. Дякую, що ти є поруч.</p>
+          <div style="margin-top:12px"><button id="loveBtnInline" style="padding:10px 16px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--accent),var(--gold));color:#fff;cursor:pointer">💖 Люблю</button></div>
+        </div>
+      </div>
+
+      <div class="page-template" data-index="7">
+        <div>
+          <h2>Сюрприз</h2>
+          <p>Ти пройшла книгу — ось невеличкий сюрприз для нас</p>
+          <div style="margin-top:12px;text-align:center;background:linear-gradient(135deg,#f0f0f0,#e0e0e0);padding:18px;border-radius:8px">🎬 Відео сюрприз (тут можна вставити відео)</div>
+          <video controls width="100%" style="border-radius:12px;max-height:360px">
+          <source src="index/video0.mp4" type="video/mp4">
+        </div>
+      </div>
+    </div>
+    <!-- /templates -->
   </div>
+</div>
 
-  <div class="overlay">
-    <h1>Ми разом вже 💕</h1>
-    <div id="timer"></div>
-    <audio autoplay loop>
-      <source src="your-music.mp3" type="audio/mpeg">
-    </audio>
-  </div>
+<!-- Звук фліпу (даний URL — приклад, можна замінити на свій файл) -->
+<audio id="flipAudio" preload="auto" style="display:none">
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d9ce3b7f07.mp3?filename=page-flip-14612.mp3" type="audio/mpeg">
+</audio>
 
-  <footer><p>З любов'ю — <strong>твій</strong> ❤️Назарчик❤️</p></footer>
+<script>
+/* ===========================
+   JS: керування книжкою — каркас
+   - рендерить розвороти з шаблонів
+   - робить фліп за допомогою накладного .flipper
+   - підтримує next/prev, клавіатуру, свайп
+   - лайтбокс, блискітки, пелюстки
+   - всі функції оголошені до використання
+   =========================== */
 
-  <!-- Lightbox -->
-  <div id="lightbox" class="lightbox" onclick="closeLightbox()">
-    <img id="lightbox-img" src="" alt="">
-  </div>
+(() => {
+  // DOM елементи
+  const templatesRoot = document.getElementById('templates');
+  const templateNodes = Array.from(templatesRoot.querySelectorAll('.page-template'))
+    .sort((a,b)=> (+a.dataset.index) - (+b.dataset.index));
+  const pagesData = templateNodes.map(n => ({ html: n.innerHTML, illustration: n.dataset.illustration || '' }));
+  const maxSpreads = Math.ceil(pagesData.length / 2);
 
-  <script>
-    // Таймер
-    const startDate = new Date("2025-07-05T00:00:00");
-    function updateTimer() {
-      const now = new Date();
-      const diff = now - startDate;
-      const d = Math.floor(diff / (1000*60*60*24));
-      const h = Math.floor((diff / (1000*60*60)) % 24);
-      const m = Math.floor((diff / (1000*60)) % 60);
-      const s = Math.floor((diff / 1000) % 60);
-      document.getElementById("timer").innerHTML = d+" днів "+h+" год "+m+" хв "+s+" сек";
+  const leftPane = document.getElementById('leftPane');
+  const rightPane = document.getElementById('rightPane');
+  const spreadEl = document.getElementById('spread');
+  const indicator = document.getElementById('indicator');
+  const flipAudio = document.getElementById('flipAudio');
+
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const soundToggle = document.getElementById('soundToggle');
+
+  // sparkles canvas
+  const canvas = document.getElementById('sparkleCanvas');
+  const ctx = canvas.getContext && canvas.getContext('2d');
+  let particles = [];
+  function resizeCanvas(){ if(!ctx) return; canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight; }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  // state
+  let currentSpread = 0; // 0 -> pages 0-1
+  let isAnimating = false;
+  let soundOn = true;
+
+  function updateIndicator(){ indicator.textContent = `Розворот ${currentSpread+1} / ${maxSpreads}`; }
+
+  // render current spread into panes
+  function renderSpread(){
+    const leftIdx = currentSpread*2;
+    const rightIdx = currentSpread*2 + 1;
+    leftPane.innerHTML = pagesData[leftIdx] ? pagesData[leftIdx].html : '';
+    rightPane.innerHTML = pagesData[rightIdx] ? pagesData[rightIdx].html : '';
+    updateIndicator();
+    attachPhotoHandlers(leftPane);
+    attachPhotoHandlers(rightPane);
+    attachInlineButtons(); // play/love кнопки всередині контенту
+    showIllustrationAnimations();
+  }
+
+  // play flip sound
+  function playFlip(){
+    if(!soundOn) return;
+    try { flipAudio.currentTime = 0; flipAudio.play().catch(()=>{}); } catch(e){}
+  }
+
+  // spawn a simple sparkles burst at x,y (client coords)
+  function createSparkle(x,y){
+    if(!ctx) return;
+    const rect = canvas.getBoundingClientRect();
+    particles.push({
+      x: x - rect.left,
+      y: y - rect.top,
+      vx: (Math.random()-0.5)*6,
+      vy: -2 - Math.random()*2,
+      life: 60,
+      size: 2 + Math.random()*3,
+      color: `hsl(${300 + Math.random()*60},80%,${60 + Math.random()*20}%)`
+    });
+  }
+  function spawnSparkles(x,y){
+    if(!ctx) return;
+    for(let i=0;i<12;i++){
+      setTimeout(()=> createSparkle(x + (Math.random()*30-15), y + (Math.random()*30-15)), i*8);
     }
-    setInterval(updateTimer,1000); updateTimer();
+  }
+  function animateParticles(){
+    if(!ctx) return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.life--;
+      ctx.globalAlpha = Math.max(0, p.life / 60);
+      ctx.fillStyle = p.color;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
+      if(p.life<=0) particles.splice(i,1);
+    }
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
 
-    // Сердечка
-    const hearts=document.getElementById('hearts');
-    function spawnHeart(){const h=document.createElement('div');h.className='heart';h.style.left=Math.random()*100+'%';h.style.top='100%';const size=12+Math.random()*26;h.style.width=size+'px';h.style.height=size+'px';hearts.appendChild(h);const anim=h.animate([{transform:'translateY(0) scale(1)',opacity:1},{transform:'translateY(-120vh) scale(1.2)',opacity:0}],{duration:6000+Math.random()*4000,easing:'ease-out'});anim.onfinish=()=>h.remove();}
-    setInterval(spawnHeart,700);
+  // lightbox
+  const lightbox = document.getElementById('lightbox');
+  const lightboxContent = document.getElementById('lightboxContent');
+  window.closeLightbox = function(){ lightbox.classList.remove('open'); };
+  function openLightbox(html){
+    lightboxContent.innerHTML = html;
+    lightbox.classList.add('open');
+    spawnSparkles(window.innerWidth/2, window.innerHeight/2);
+  }
 
-    // Зірочки
-    const stars=document.getElementById("stars");
-    function spawnStar(){const star=document.createElement("div");star.className="star";const size=Math.random()*4+2;star.style.width=size+"px";star.style.height=size+"px";star.style.left=Math.random()*100+"vw";star.style.animationDuration=(5+Math.random()*5)+"s";stars.appendChild(star);setTimeout(()=>star.remove(),10000);}
-    setInterval(spawnStar,200);
+  // attach click handlers to .photo elements inside a pane
+  function attachPhotoHandlers(root){
+    root.querySelectorAll && root.querySelectorAll('.photo').forEach(el=>{
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        openLightbox(`<div style="font-size:40px; margin-bottom:10px">✨</div><div style="font-size:18px">${el.innerHTML}</div>`);
+      });
+    });
+  }
 
-    // Lightbox
-    function openLightbox(src){document.getElementById('lightbox-img').src=src;document.getElementById('lightbox').classList.add('open');}
-    function closeLightbox(){document.getElementById('lightbox').classList.remove('open');}
+  // inline buttons (play/love) inside templates
+  function attachInlineButtons(){
+    const playInline = document.getElementById('playBtnInline');
+    if(playInline){
+      playInline.onclick = (e)=>{ e.stopPropagation(); // simple tone melody
+        simpleMelody(); spawnSparkles(window.innerWidth/2, window.innerHeight/2);
+      };
+    }
+    const loveInline = document.getElementById('loveBtnInline');
+    if(loveInline){
+      loveInline.onclick = (e)=>{ e.stopPropagation(); spawnHearts(); for(let i=0;i<8;i++) setTimeout(()=>spawnSparkles(window.innerWidth/2, window.innerHeight/2), i*60); };
+    }
+  }
 
-    // Timeline анімація
-    const items=document.querySelectorAll('.timeline-item');
-    const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');}});},{threshold:0.2});
-    items.forEach(i=>observer.observe(i));
+  // spawn hearts
+  function spawnHearts(){
+    for(let i=0;i<10;i++){
+      const heart = document.createElement('div');
+      heart.textContent = '❤️';
+      heart.style.position = 'fixed';
+      heart.style.left = (30 + Math.random()*40) + '%';
+      heart.style.bottom = '10%';
+      heart.style.fontSize = (18 + Math.random()*20) + 'px';
+      heart.style.zIndex = 2500;
+      document.body.appendChild(heart);
+      heart.animate([{ transform:'translateY(0) scale(1)', opacity:1 }, { transform:`translateY(-${80 + Math.random()*120}px) scale(.5)`, opacity:0 }], { duration:1300 + Math.random()*400, easing:'ease-out' });
+      setTimeout(()=> heart.remove(), 1600);
+    }
+  }
 
-    // Burger
-    document.getElementById("burger").onclick=()=>{document.getElementById("navLinks").classList.toggle("active");};
-  </script>
+  // simple tone melody (synth)
+  let melodyTimer = null, melodyPlaying = false;
+  function simpleMelody(){
+    if(melodyPlaying){ melodyPlaying=false; if(melodyTimer) clearTimeout(melodyTimer); return; }
+    melodyPlaying = true;
+    const notes = [262,330,392,523];
+    let i=0;
+    const playNext = ()=>{
+      if(!melodyPlaying) return;
+      playTone(notes[i % notes.length], 0.25);
+      i++;
+      melodyTimer = setTimeout(playNext, 350);
+    };
+    playNext();
+    setTimeout(()=> melodyPlaying=false, 8000);
+  }
+  function playTone(freq, duration){
+    if(!soundOn) return;
+    try{
+      const ctxA = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctxA.createOscillator();
+      const g = ctxA.createGain();
+      o.connect(g); g.connect(ctxA.destination);
+      o.frequency.value = freq; o.type = 'sine';
+      g.gain.setValueAtTime(0.07, ctxA.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctxA.currentTime + duration);
+      o.start(); o.stop(ctxA.currentTime + duration);
+    }catch(e){}
+  }
+
+  // show small page-specific animations: petals / clouds
+  function showIllustrationAnimations(){
+    // clear layers
+    document.querySelectorAll('.floating-temp').forEach(n=>n.remove());
+    const leftIdx = currentSpread*2;
+    const leftData = pagesData[leftIdx];
+    if(!leftData) return;
+    const ill = leftData.illustration;
+    const layer = document.createElement('div');
+    layer.className = 'floating-temp';
+    layer.style.position = 'absolute';
+    layer.style.inset = '0';
+    layer.style.pointerEvents = 'none';
+    leftPane.appendChild(layer);
+    if(ill === 'petals'){
+      for(let i=0;i<8;i++){
+        const p = document.createElement('div');
+        p.className = 'petal';
+        p.style.left = (Math.random()*100)+'%';
+        p.style.top = '-10vh';
+        p.style.animation = `petalFall ${4000 + Math.random()*3000}ms linear ${i*150}ms forwards`;
+        layer.appendChild(p);
+      }
+    } else if(ill === 'clouds'){
+      for(let i=0;i<3;i++){
+        const c = document.createElement('div');
+        c.className = 'cloud';
+        c.style.left = (15 + i*25) + '%';
+        c.style.top = (10 + Math.random()*15) + '%';
+        c.style.animation = `cloudFloat ${4000 + i*1000}ms ease-in-out infinite alternate`;
+        layer.appendChild(c);
+      }
+    }
+  }
+
+  // ----------------------
+  // FLIP ANIMATION
+  // - для next: накладаємо flipper над правою панеллю, показуємо поточний правий вміст,
+  //   анімуємо його rotateY(0 -> -180deg) з origin left (перелистування вправо->вліво)
+  // - для prev: накладаємо flipper над лівою панеллю, показуємо поточний лівий вміст,
+  //   анімуємо rotateY(0 -> 180deg) з origin right (повернення назад)
+  // Після завершення анімації оновлюємо currentSpread і рендеримо новий розворот.
+  // ----------------------
+
+  function createFlipper(side /*'left'|'right'*/, contentHtml){
+    const fl = document.createElement('div');
+    fl.className = 'flipper';
+    const inner = document.createElement('div');
+    inner.className = 'content';
+    inner.innerHTML = contentHtml;
+    fl.appendChild(inner);
+    // позиціюємо над відповідною панеллю
+    if(side === 'right'){
+      fl.style.right = ( (window.innerWidth <= 820) ? '4%': 'calc(4% - 0px)' ); // small-screen adjust
+      fl.style.left = 'auto';
+      fl.style.transformOrigin = 'left center';
+    } else {
+      fl.style.left = ( (window.innerWidth <= 820) ? '4%' : 'calc(4% - 0px)' );
+      fl.style.right = 'auto';
+      fl.style.transformOrigin = 'right center';
+    }
+    // match size
+    const paneWidth = document.querySelector('.pane.left').getBoundingClientRect().width;
+    fl.style.width = paneWidth + 'px';
+    fl.style.height = '100%';
+    return fl;
+  }
+
+  function nextSpread(){
+    if(isAnimating) return;
+    if(currentSpread >= maxSpreads - 1){
+      // кінцева дія: показати сюрприз або просто зупинитись
+      openLightbox('<div style="font-size:26px;color:#fff">🎉 Це кінець книги — сюрприз тут!</div>');
+      return;
+    }
+    isAnimating = true;
+    // content of current right page
+    const rightIdx = currentSpread*2 + 1;
+    const rightHtml = pagesData[rightIdx] ? pagesData[rightIdx].html : '';
+    // create flipper over right side
+    const fl = createFlipper('right', rightHtml);
+    // place it exactly overlapping the right pane
+    const rectRight = rightPane.getBoundingClientRect();
+    const rectSpread = spreadEl.getBoundingClientRect();
+    fl.style.top = (rectRight.top - rectSpread.top) + 'px';
+    fl.style.left = (rectRight.left - rectSpread.left) + 'px';
+    spreadEl.appendChild(fl);
+
+    // ensure repaint
+    requestAnimationFrame(()=>{
+      playFlip();
+      // animate to -180deg
+      fl.style.transform = 'rotateY(-180deg)';
+      const onEnd = (e)=>{
+        if(e.propertyName !== 'transform') return;
+        fl.removeEventListener('transitionend', onEnd);
+        // завершили перелистування — підняти spread
+        currentSpread = Math.min(currentSpread + 1, maxSpreads - 1);
+        renderSpread();
+        spawnSparkles(window.innerWidth/2, window.innerHeight/2);
+        fl.remove();
+        isAnimating = false;
+      };
+      fl.addEventListener('transitionend', onEnd);
+      // safety fallback
+      setTimeout(()=>{ if(isAnimating){ isAnimating=false; currentSpread = Math.min(currentSpread + 1, maxSpreads -1); renderSpread(); fl.remove(); } }, 1000);
+    });
+  }
+
+  function prevSpread(){
+    if(isAnimating) return;
+    if(currentSpread <= 0) return;
+    isAnimating = true;
+    // content of current left page
+    const leftIdx = currentSpread*2;
+    const leftHtml = pagesData[leftIdx] ? pagesData[leftIdx].html : '';
+    const fl = createFlipper('left', leftHtml);
+    // position over left pane
+    const rectLeft = leftPane.getBoundingClientRect();
+    const rectSpread = spreadEl.getBoundingClientRect();
+    fl.style.top = (rectLeft.top - rectSpread.top) + 'px';
+    fl.style.left = (rectLeft.left - rectSpread.left) + 'px';
+    spreadEl.appendChild(fl);
+
+    // animate flip to 180deg (flip right)
+    requestAnimationFrame(()=>{
+      playFlip();
+      fl.style.transform = 'rotateY(180deg)';
+      const onEnd = (e)=>{
+        if(e.propertyName !== 'transform') return;
+        fl.removeEventListener('transitionend', onEnd);
+        currentSpread = Math.max(0, currentSpread - 1);
+        renderSpread();
+        spawnSparkles(window.innerWidth/2, window.innerHeight/2);
+        fl.remove();
+        isAnimating = false;
+      };
+      fl.addEventListener('transitionend', onEnd);
+      setTimeout(()=>{ if(isAnimating){ isAnimating=false; currentSpread = Math.max(0, currentSpread -1); renderSpread(); fl.remove(); } }, 1000);
+    });
+  }
+
+  // Keybinds & buttons
+  nextBtn.addEventListener('click', nextSpread);
+  prevBtn.addEventListener('click', prevSpread);
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSpread(); } if(e.key === 'ArrowLeft') prevSpread(); });
+
+  // touch gestures (simple)
+  let touchStartX = 0; let lastTouch = 0;
+  spreadEl.addEventListener('touchstart', (e)=>{ touchStartX = e.changedTouches[0].screenX; }, {passive:true});
+  spreadEl.addEventListener('touchend', (e)=>{
+    const now = Date.now(); if(now - lastTouch < 300) return; lastTouch = now;
+    const diff = e.changedTouches[0].screenX - touchStartX;
+    if(Math.abs(diff) > 50) diff < 0 ? nextSpread() : prevSpread();
+  }, {passive:true});
+
+  // toggling sound
+  soundToggle.addEventListener('click', ()=>{
+    soundOn = !soundOn;
+    soundToggle.classList.toggle('active', soundOn);
+  });
+
+  // clicking on spread produces sparkles
+  spreadEl.addEventListener('click', (e)=>{
+    if(e.target.closest('.ctrl')) return;
+    spawnSparkles(e.clientX, e.clientY);
+  });
+
+  // expose some functions for debugging (optional)
+  window.kbook = { nextSpread, prevSpread, renderSpread };
+
+  // initial render
+  renderSpread();
+  updateIndicator();
+
+  // resize canvas after layout
+  setTimeout(resizeCanvas, 200);
+  window.addEventListener('load', ()=>{ setTimeout(()=> spawnSparkles(window.innerWidth/2, window.innerHeight/2), 500); });
+
+})(); // IIFE
+</script>
 </body>
 </html>
