@@ -18,107 +18,134 @@
 body {
     min-height: 100vh;
     background: linear-gradient(180deg, #08162e, #102a54);
-    overflow: hidden;
+    overflow-x: hidden; /* Запобігаємо горизонтальній прокрутці */
     display: flex;
     justify-content: center;
     align-items: center;
     color: #fff;
-}
-
-.container {
-    max-width: 460px;
     padding: 20px;
 }
 
+.container {
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    justify-content: center;
+}
+
 .card {
+    width: 100%;
     background: rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px); /* Для підтримки Safari */
     border-radius: 30px;
-    padding: 40px;
+    padding: 30px 20px;
     text-align: center;
     box-shadow: 0 25px 50px rgba(0,0,0,0.45);
     animation: fadeIn 1.5s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 h1 {
-    font-size: 30px;
+    font-size: clamp(22px, 6vw, 30px); /* Адаптивний розмір шрифту */
     color: #ffdf8a;
+    margin-bottom: 10px;
 }
 
 .tree {
-    font-size: 50px;
-    margin: 15px 0;
+    font-size: clamp(40px, 10vw, 60px);
+    margin: 10px 0;
     animation: glow 2s infinite alternate;
 }
 
 .section {
-    margin-top: 25px;
+    margin-top: 20px;
 }
 
 .section h2 {
-    font-size: 18px;
+    font-size: clamp(16px, 4vw, 18px);
     margin-bottom: 10px;
     color: #ffd56a;
 }
 
 .section p {
-    font-size: 15px;
-    line-height: 1.7;
+    font-size: clamp(14px, 3.5vw, 15px);
+    line-height: 1.6;
     color: #f1f1f1;
 }
 
 .wishes {
+    display: inline-block; /* Центруємо блок списку */
     text-align: left;
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
 .wishes li {
     list-style: none;
     margin-bottom: 8px;
+    font-size: clamp(14px, 3.5vw, 15px);
 }
 
 .timer {
-    margin-top: 15px;
-    font-size: 18px;
+    margin-top: 10px;
+    font-size: clamp(16px, 5vw, 20px);
+    font-weight: bold;
     color: #ffb703;
+    letter-spacing: 1px;
 }
 
 button {
     margin-top: 25px;
-    padding: 12px 30px;
+    padding: 12px 35px;
     border: none;
     border-radius: 30px;
     background: linear-gradient(135deg, #ff4d4d, #ff9f1c);
     color: white;
     font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%; /* На мобільних кнопка зручніша, коли велика */
+    max-width: 250px;
 }
 
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(255, 159, 28, 0.6);
+button:active {
+    transform: scale(0.95);
 }
 
-/* Snow */
+/* Адаптація для дуже малих екранів */
+@media (max-width: 360px) {
+    .card {
+        padding: 20px 15px;
+    }
+}
+
+/* Сніг */
 .snow {
-    position: absolute;
+    position: fixed; /* Щоб сніг був відносно вікна */
     top: -10px;
     color: white;
-    animation: fall linear infinite;
-    opacity: 0.9;
+    user-select: none;
+    pointer-events: none;
+    z-index: 1000;
+    animation: fall linear infinite, sway ease-in-out infinite;
 }
 
 @keyframes fall {
     to {
-        transform: translateY(110vh);
+        transform: translateY(105vh);
     }
+}
+
+@keyframes sway {
+    0%, 100% { margin-left: 0; }
+    50% { margin-left: 20px; }
 }
 
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(20px);
     }
     to {
         opacity: 1;
@@ -129,9 +156,11 @@ button:hover {
 @keyframes glow {
     from {
         text-shadow: 0 0 5px #ffdf8a;
+        transform: scale(1);
     }
     to {
-        text-shadow: 0 0 25px #ffdf8a;
+        text-shadow: 0 0 20px #ffdf8a;
+        transform: scale(1.05);
     }
 }
 </style>
@@ -140,70 +169,81 @@ button:hover {
 <body>
 
 <div class="container">
-<div class="card">
+    <div class="card">
+        <h1>З Новим Роком 💖</h1>
+        <div class="tree">🎄</div>
 
-    <h1>З Новим Роком 💖</h1>
-    <div class="tree">🎄</div>
+        <div class="section">
+            <p>
+                Нехай цей рік стане для тебе особливим ✨<br>
+                Роком тепла, щирих усмішок і моментів,
+                які хочеться згадувати знову і знову ❤️
+            </p>
+        </div>
 
-    <div class="section">
-        <p>
-            Нехай цей рік стане для тебе особливим ✨  
-            Роком тепла, щирих усмішок і моментів,
-            які хочеться згадувати знову і знову ❤️
-        </p>
+        <div class="section">
+            <h2>🎁 Мої побажання</h2>
+            <ul class="wishes">
+                <li>✨ Більше радості й магії</li>
+                <li>💫 Виконання всіх мрій</li>
+                <li>❤️ Любові та турботи</li>
+                <li>🌟 Віри в себе щодня</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>⏳ До свята залишилось</h2>
+            <div class="timer" id="timer">Завантаження...</div>
+        </div>
+
+        <div class="section">
+            <h2>💌 Маленький секрет</h2>
+            <p>
+                Ти робиш цей світ світлішим просто тим,
+                що в ньому є ✨ Дякую за це ❤️
+            </p>
+        </div>
+
+        <button onclick="alert('З Новим Роком, моя маленька❤️ ✨')">
+            Натисни ✨
+        </button>
     </div>
-
-    <div class="section">
-        <h2>🎁 Мої побажання для тебе</h2>
-        <ul class="wishes">
-            <li>✨ Більше радості й магії</li>
-            <li>💫 Виконання найзаповітніших мрій</li>
-            <li>❤️ Любові, тепла і турботи</li>
-            <li>🌟 Віри в себе щодня</li>
-        </ul>
-    </div>
-
-    <div class="section">
-        <h2>⏳ До Нового року залишилось</h2>
-        <div class="timer" id="timer">Завантаження...</div>
-    </div>
-
-    <div class="section">
-        <h2>💌 Маленький секрет</h2>
-        <p>
-            Ти робиш цей світ світлішим просто тим,
-            що в ньому є ✨  
-            Дякую тобі за це ❤️
-        </p>
-    </div>
-
-    <button onclick="alert('З Новим Роком, моя маленька❤️ ✨')">
-        Натисни ✨
-    </button>
-
-</div>
 </div>
 
 <script>
-// Snow
+// Snow - покращений для мобільних (менше сніжинок для кращої швидкості)
 function createSnow() {
     const snow = document.createElement('div');
     snow.className = 'snow';
     snow.innerText = '❄';
+    
+    const size = (10 + Math.random() * 15) + 'px';
+    const duration = (5 + Math.random() * 7) + 's';
+    const swayDuration = (2 + Math.random() * 3) + 's';
+
     snow.style.left = Math.random() * 100 + 'vw';
-    snow.style.fontSize = (10 + Math.random() * 16) + 'px';
-    snow.style.animationDuration = (4 + Math.random() * 6) + 's';
+    snow.style.fontSize = size;
+    snow.style.opacity = Math.random() * 0.7 + 0.3;
+    snow.style.animationDuration = `${duration}, ${swayDuration}`;
+    
     document.body.appendChild(snow);
 
     setTimeout(() => snow.remove(), 10000);
 }
-setInterval(createSnow, 180);
+// Інтервал трохи збільшено, щоб не перевантажувати телефон
+setInterval(createSnow, 300);
 
 // Timer
 function updateTimer() {
-    const newYear = new Date(new Date().getFullYear() + 1, 0, 1);
+    const currentYear = new Date().getFullYear();
+    const newYear = new Date(currentYear + 1, 0, 1);
     const now = new Date();
     const diff = newYear - now;
+
+    if (diff <= 0) {
+        document.getElementById('timer').innerText = "З Новим Роком! 🥳";
+        return;
+    }
 
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor(diff / (1000 * 60 * 60) % 24);
